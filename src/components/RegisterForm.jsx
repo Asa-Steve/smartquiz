@@ -34,8 +34,8 @@ const RegisterForm = () => {
               className="h-full p-2 w-[90%] rounded-[8px] focus:outline-none"
             />
             <Icon
-              icon={showPw ? "" : "mdi-light:eye-off"}
-              className="size-6"
+              icon={showPw ? "mdi-light:eye" : "mdi-light:eye-off"}
+              className="cursor-pointer size-6"
               onClick={() => setShowPw((prev) => !prev)}
             />
           </div>

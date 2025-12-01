@@ -35,7 +35,7 @@ const LoginForm = () => {
             />
             <Icon
               icon={showPw ? "mdi-light:eye" : "mdi-light:eye-off"}
-              className="size-6"
+              className="cursor-pointer size-6"
               onClick={() => setShowPw((prev) => !prev)}
             />
           </div>
