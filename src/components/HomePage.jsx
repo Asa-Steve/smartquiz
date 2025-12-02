@@ -1,6 +1,8 @@
 import { useState } from "react";
 import AnimatedBox from "./AnimatedBox";
 import Start from "./Start";
+import { Icon } from "@iconify/react";
+import { abbrName } from "@/helpers/helper";
 
 function getRandomSize() {
   return Math.floor(Math.random() * 100 + 100); // Random size between 100 and 200
@@ -16,7 +18,32 @@ const HomePage = () => {
       <AnimatedBox size={getRandomSize()} />
       <AnimatedBox bgColor={"#c1121f"} size={getRandomSize()} />
       <AnimatedBox bgColor={"#fff"} size={getRandomSize()} />
-
+      <div className="absolute z-[1] p-1 pe-4 border w-fit min-w-[100px] border-gray-800 right-[2vw] top-2 bg-white/10 rounded flex items-center gap-2 text-white">
+        <img
+          src="https://api.dicebear.com/9.x/fun-emoji/svg?radius=5"
+          alt="avatar"
+          className="w-[50px] h-[50px]"
+        />
+        <div className="w-full">
+          <p className="text-gray-300">
+            {" "}
+            {"Dev Steve Okey".length > 5
+              ? abbrName("Dev Steve Okey")
+              : "Dev Steve Okey"}
+          </p>
+          <div className="flex items-center gap-2 pt-1 text-sm border-t border-gray-700 [&_svg]:hover:text-white [&>p]:hover:text-white w-fit pe-2">
+            <p className="w-[15px]">
+              <Icon
+                icon="lets-icons:on-button-light"
+                className="text-muted-foreground mb-[-2.8px] transition-all delay-75"
+              />
+            </p>
+            <p className="transition-all delay-300 cursor-pointer text-muted-foreground">
+              Logout
+            </p>
+          </div>
+        </div>
+      </div>
       <div className="relative flex flex-col items-center justify-center w-full h-full gap-20 p-4 overflow-hidden font-bold backdrop-blur-[40px] bg-[hsla(221,51%,16%,0.6)]">
         <h1 className="font-bold text-white md:text-[4rem] text-center">
           Welcome to this Awesome <br />

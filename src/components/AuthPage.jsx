@@ -5,6 +5,7 @@ import RegisterForm from "./RegisterForm";
 
 const AuthPage = () => {
   const [choice, setChoice] = useState("login");
+
   return (
     <div className="md:max-h-[500px] overflow-y-auto flex flex-col justify-around md:block h-full">
       <div>

@@ -1,24 +1,68 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Icon } from "@iconify/react";
 import { Button } from "./ui/button";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import Start from "./Start";
+import { useInitialStateContext } from "./context/InitialstateContext";
 
 const QuizResult = ({ open, setOpen }) => {
   const navigate = useNavigate();
-  const [retake, setRetake] = useState(false);
+  const [retake, setRetake] = useState(null);
+  const { state, dispatch } = useInitialStateContext();
+  const { questions, totalScore, answers, allowedTime, totalTime } = state;
+
+  console.log("QuizResult State:", state);
+
+  const [aggregate, setAggregate] = useState({
+    correctAnswers: 0,
+    incorrectAnswers: 0,
+    totalPoints: 0,
+  });
+
+  function handleExit() {
+    setOpen(false);
+    dispatch({ type: "end" });
+    navigate("/");
+  }
+
+  function handleRetake() {
+    setRetake(true);
+    dispatch({ type: "end" });
+  }
 
   useEffect(() => {
-    if (retake) {
+    if (open && retake == false) {
       setOpen(false);
     }
-  }, [retake, setOpen]);
+  }, [retake, open, setOpen]);
+
+  useEffect(() => {
+    if (questions.length === 0) return;
+
+    let totalPoints = 0;
+    let correctAnswers = 0;
+    let incorrectAnswers = 0;
+
+    questions.forEach((question) => {
+      totalPoints += question?.points ?? 0;
+
+      const userAnswer = answers.find((a) => a.qid === question.id);
+      if (userAnswer) {
+        if (userAnswer.answer === question.answer) {
+          correctAnswers++;
+        } else {
+          incorrectAnswers++;
+        }
+      }
+    });
+
+    setAggregate({
+      correctAnswers,
+      incorrectAnswers,
+      totalPoints,
+    });
+  }, [questions, answers]);
 
   return (
     <>
@@ -44,48 +88,58 @@ const QuizResult = ({ open, setOpen }) => {
                   <div className="flex items-center gap-2 p-2  lg:p-1 border rounded-[8px]">
                     <Icon
                       icon="material-symbols-light:social-leaderboard-outline"
-                      className="size-10"
+                      className="size-9"
                     />
-                    <h2 className="font-bold">Total Score: 80%</h2>
+                    <h2 className="font-bold">
+                      Total Score:{" "}
+                      {Math.trunc(
+                        (totalScore / aggregate?.totalPoints) * 100
+                      ) || 0}
+                      %
+                    </h2>
                   </div>
                   <div className="flex items-center gap-3  lg:p-1  p-2 border rounded-[8px]">
-                    <Icon icon="game-icons:sands-of-time" className="size-8" />
-                    <h2 className="font-bold">Total Time Taken: 120mins</h2>
+                    <Icon icon="game-icons:sands-of-time" className="size-7" />
+                    <h2 className="font-bold">
+                      Total Time Taken: {totalTime - allowedTime} min
+                      {totalTime - allowedTime > 1 && "s"}
+                    </h2>
                   </div>
                   <div className="flex items-center gap-3  lg:p-1  p-2 border rounded-[8px]">
                     <Icon
                       icon="icon-park-outline:list-success"
                       className="size-7"
                     />
-                    <h2 className="font-bold">Attempted Questions: 7</h2>
+                    <h2 className="font-bold">
+                      Attempted Questions: &nbsp; {answers?.length ?? 0} /{" "}
+                      {questions?.length ?? 0} &nbsp;
+                    </h2>
                   </div>
                   <div className="flex items-center gap-3  lg:p-1  p-2 border rounded-[8px]">
-                    <Icon
-                      icon="icon-park-outline:list-success"
-                      className="size-7"
-                    />
-                    <h2 className="font-bold">Correct Answers: 5</h2>
+                    <Icon icon="solar:list-check-broken" className="size-8" />
+                    <h2 className="font-bold">
+                      Correct Answers: {aggregate?.correctAnswers}
+                    </h2>
                   </div>
                   <div className="flex items-center gap-3  lg:p-1  p-2 border rounded-[8px]">
                     <Icon
                       icon="solar:list-cross-minimalistic-broken"
                       className="size-8"
                     />
-                    <h2 className="font-bold">Incorrect Answers: 2</h2>
+                    <h2 className="font-bold">
+                      Incorrect Answers: {aggregate?.incorrectAnswers}
+                    </h2>
                   </div>
                 </div>
                 <div className="flex justify-between px-2 min-h-[60px] items-center">
                   <Button
-                    onClick={() => {
-                      console.log("i ran");
-                      setRetake(true);
-                    }}
+                    onClick={handleRetake}
                     className={"hover:bg-[#02C7DB] border-none"}
                   >
                     Retake Quiz
                   </Button>
                   <Button
-                    onClick={() => navigate("/")}
+                    onClick={handleExit}
                     variant={"destructive"}
                     className="border-none hover:bg-red-400"
                   >
@@ -97,7 +151,7 @@ const QuizResult = ({ open, setOpen }) => {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-      <Start open={retake} setOpen={setRetake} />
+      {retake && <Start open={retake} setOpen={setRetake} />}
     </>
   );
 };

@@ -9,7 +9,7 @@ import { useInitialStateContext } from "./context/InitialstateContext";
 const Setup = ({ setOpen }) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [startQuiz, setStartQuiz] = useState(false);
+  const { dispatch } = useInitialStateContext();
 
   // Needed fields variables
   const [fields, setFields] = useState({
@@ -19,44 +19,36 @@ const Setup = ({ setOpen }) => {
     time: "",
   });
 
+  const { data, isLoading, refetch } = useQuestions({ ...fields });
+
+  // Handle start quiz Fn
   function handleStartQuiz(e) {
     e.preventDefault();
     const { topic, qNum, difficulty, time } = fields;
     if ((!topic || qNum <= 0 || !difficulty, time <= 0)) {
       return;
     }
-    setStartQuiz(true);
+    refetch();
   }
-
-  const { data, isLoading } = useQuestions({ ...fields, start: startQuiz });
-  const { setInitialState } = useInitialStateContext();
 
   useEffect(() => {
     if (data && !isLoading && data?.length > 0) {
-      setInitialState((prevState) => ({
-        ...prevState,
-        questions: data,
-        totalQuestions: data.length,
-        difficulty: fields.difficulty,
-        topic: fields.topic,
-        allowedTime: parseInt(fields.time, 10),
-      }));
+      dispatch({
+        type: "start",
+        payload: {
+          questions: data,
+          difficulty: fields.difficulty,
+          topic: fields.topic,
+          allowedTime: parseInt(fields.time, 10),
+          totalTime: parseInt(fields.time, 10),
+        },
+      });
     }
-    if (startQuiz && data?.length > 0 && !isLoading) {
+    if (data?.length > 0 && !isLoading) {
       navigate("/quiz");
       setOpen(false);
     }
-  }, [
-    data,
-    isLoading,
-    setInitialState,
-    fields.difficulty,
-    fields.topic,
-    fields.time,
-    navigate,
-    setOpen,
-    startQuiz,
-  ]);
+  }, [data, isLoading, dispatch, fields, navigate, setOpen]);
 
   return (
     <div className="rounded-[8px] h-full p-2 px-[20px] flex items-center">
@@ -147,6 +139,7 @@ const Setup = ({ setOpen }) => {
         <Button
           className="w-full mt-[30px] hover:bg-[#02C7DB] hover:border-none"
           onClick={handleStartQuiz}
+          disabled={isLoading}
         >
           {isLoading && <Spinner />}
           Start Quiz Now

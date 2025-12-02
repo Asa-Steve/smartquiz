@@ -3,7 +3,8 @@ import AuthPage from "./AuthPage";
 import Setup from "./Setup";
 
 const Start = ({ open, setOpen }) => {
-  const isAuthenticated = true;
+  const isAuthenticated = false;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent

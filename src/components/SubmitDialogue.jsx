@@ -16,17 +16,16 @@ import { useInitialStateContext } from "./context/InitialstateContext";
 
 const SubmitDialogue = () => {
   const [showResult, setShowResult] = useState(false);
-  const { initialState, setInitialState } = useInitialStateContext();
+  const { dispatch } = useInitialStateContext();
+  // const [result, setResult] = useState(null);
 
   function handleSubmit() {
     setShowResult(true);
-    console.log("before submitting", initialState);
-    setInitialState((prevState) => ({
-      ...prevState,
-      allowedTime: 0,
-      ended: true,
-    }));
-    console.log("submitted", initialState);
+    // setResult({
+    //   answers: state?.answers,
+    //   totalScore: state?.totalScore,
+    // });
+    dispatch({ type: "submit" });
   }
 
   return (
@@ -64,7 +63,7 @@ const SubmitDialogue = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      <QuizResult open={showResult} setOpen={setShowResult} />
+      {showResult && <QuizResult open={showResult} setOpen={setShowResult} />}
     </>
   );
 };
