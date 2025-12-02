@@ -1,10 +1,13 @@
-import { createContext, useContext, useState } from "react";
+import { reducer } from "@/helpers/reducer";
+import { createContext, useContext, useReducer } from "react";
+
 export const stateContext = createContext();
 
-const initialSt = {
+const initialState = {
   questions: [],
   choice: null,
   allowedTime: 0,
+  totalTime: 0,
   totalQuestions: 0,
   currentQuestion: 0,
   answer: null,
@@ -17,9 +20,11 @@ const initialSt = {
 };
 
 const InitialstateContext = ({ children }) => {
-  const [initialState, setInitialState] = useState(initialSt);
+  // const [initialState, setInitialState] = useState(initialSt);
+  const [state, dispatch] = useReducer(reducer, initialState);
+
   return (
-    <stateContext.Provider value={{ initialState, setInitialState }}>
+    <stateContext.Provider value={{ state, dispatch }}>
       {children}
     </stateContext.Provider>
   );
