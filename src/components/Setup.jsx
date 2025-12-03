@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router";
 import { Button } from "./ui/button";
-import { useIsMobile } from "./hooks/useResize";
+import { useIsMobile } from "../hooks/useResize";
 import { Spinner } from "@/components/ui/spinner";
 import { useEffect, useState } from "react";
-import { useQuestions } from "./hooks/useQuestions";
-import { useInitialStateContext } from "./context/InitialstateContext";
+import { useQuestions } from "../hooks/useQuestions";
+import { useInitialStateContext } from "../context/InitialstateContext";
 
 const Setup = ({ setOpen }) => {
   const navigate = useNavigate();

@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import Start from "./Start";
-import { useInitialStateContext } from "./context/InitialstateContext";
+import { useInitialStateContext } from "../context/InitialstateContext";
 
 const QuizResult = ({ open, setOpen }) => {
   const navigate = useNavigate();

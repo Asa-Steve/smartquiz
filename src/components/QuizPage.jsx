@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { useIsMobile } from "./hooks/useResize";
+import { useIsMobile } from "../hooks/useResize";
 import SubmitDialogue from "./SubmitDialogue";
-import { useInitialStateContext } from "./context/InitialstateContext";
+import { useInitialStateContext } from "../context/InitialstateContext";
 
 const QuizPage = () => {
   const { state, dispatch } = useInitialStateContext();

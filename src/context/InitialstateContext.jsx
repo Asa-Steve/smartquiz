@@ -1,7 +1,7 @@
 import { reducer } from "@/helpers/reducer";
 import { createContext, useContext, useReducer } from "react";
 
-export const stateContext = createContext();
+const stateContext = createContext();
 
 const initialState = {
   questions: [],
