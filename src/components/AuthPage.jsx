@@ -2,9 +2,12 @@ import { useState } from "react";
 import LoginForm from "./LoginForm";
 import { Icon } from "@iconify/react";
 import RegisterForm from "./RegisterForm";
+import { useAuthProvider } from "@/context/AuthContext";
+import { Spinner } from "./ui/spinner";
 
 const AuthPage = () => {
   const [choice, setChoice] = useState("login");
+  const { signInWithOAuth, isSigningInWithOAuth } = useAuthProvider();
 
   return (
     <div className="md:max-h-[500px] overflow-y-auto flex flex-col justify-around md:block h-full">
@@ -15,12 +18,21 @@ const AuthPage = () => {
       <div className="flex flex-col gap-3">
         <div className="flex h-[10px] items-center justify-center gap-2">
           <span className="border border-gray-500 w-[20px]"></span>
-          <span className="mt-[-4px]">or</span>
+          <span className="mt-[-4px]">other options</span>
           <span className="border  border-gray-500 w-[20px]"></span>
         </div>
-        <div className="flex items-start justify-center gap-1 py-1 px-2 mx-auto transition-all duration-300 border border-gray-100 cursor-pointer hover:bg-gray-300 w-fit rounded-[8px]">
-          <Icon icon="basil:gmail-outline" className="size-6" />
-          <span className="mt-[-1px]">Mail</span>
+        <div
+          className="flex items-start justify-center gap-1 py-1 px-2 mx-auto transition-all duration-300 border border-gray-100 cursor-pointer hover:bg-gray-300 w-fit rounded-[8px]"
+          onClick={!isSigningInWithOAuth && signInWithOAuth}
+        >
+          {isSigningInWithOAuth ? (
+            <Spinner />
+          ) : (
+            <>
+              <Icon icon="basil:gmail-outline" className="size-6" />
+              <span className="mt-[-1px]">Mail</span>
+            </>
+          )}
         </div>
         <div className="text-center">
           {choice == "login" && (

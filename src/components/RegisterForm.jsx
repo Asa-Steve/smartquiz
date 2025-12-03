@@ -1,12 +1,14 @@
 import { Icon } from "@iconify/react";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { emailRegex } from "@/helpers/helper";
 
 const RegisterForm = () => {
   const [showPw, setShowPw] = useState(false);
   const [isErr, setIsErr] = useState(false);
   const [formD, setFormD] = useState({
     username: "",
+    email: "",
     password: "",
     confirm: "",
   });
@@ -23,6 +25,9 @@ const RegisterForm = () => {
     }
 
     if (formD.password != formD.confirm) {
+      isErrorFound = true;
+    }
+    if (!emailRegex.test(formD.email)) {
       isErrorFound = true;
     }
 
@@ -65,13 +70,13 @@ const RegisterForm = () => {
           />
         </div>
         <div className="flex flex-col">
-          <label htmlFor="password" className="mb-1 font-medium">
-            Password
+          <label htmlFor="email" className="mb-1 font-medium">
+            Email
           </label>
           <div
             className="flex border border-gray-400 h-[40px] rounded-[8px] overflow-hidden items-center"
             style={
-              isErr && !formD?.password
+              isErr && (!formD?.email || !emailRegex.test(formD.email))
                 ? {
                     outline: "1px solid red",
                     outlineOffset: "2px",
@@ -80,45 +85,75 @@ const RegisterForm = () => {
             }
           >
             <input
-              type={showPw ? "text" : "password"}
-              id="password"
-              placeholder="********"
+              type="text"
+              id="email"
+              placeholder="devsteve@example.com"
               className="h-full p-2 w-[90%] rounded-[8px] focus:outline-none"
-              value={formD?.password ?? ""}
+              value={formD?.email ?? ""}
               onChange={(e) =>
-                setFormD((prev) => ({ ...prev, password: e.target.value }))
+                setFormD((prev) => ({ ...prev, email: e.target.value }))
               }
-            />
-            <Icon
-              icon={showPw ? "mdi-light:eye" : "mdi-light:eye-off"}
-              className="cursor-pointer size-6"
-              onClick={() => setShowPw((prev) => !prev)}
             />
           </div>
         </div>
-        <div className="flex flex-col">
-          <label htmlFor="confirmPw" className="mb-1 font-medium">
-            Confirm Password
-          </label>
-          <input
-            type={showPw ? "text" : "password"}
-            id="confirmPw"
-            placeholder="********"
-            className="p-2 w-full border border-gray-400 h-[40px] rounded-[8px] overflow-hidden focus:outline-none"
-            value={formD?.confirm ?? ""}
-            style={
-              isErr && (!formD?.confirm || formD.confirm != formD.password)
-                ? {
-                    outline: "1px solid red",
-                    outlineOffset: "2px",
-                  }
-                : {}
-            }
-            onChange={(e) =>
-              setFormD((prev) => ({ ...prev, confirm: e.target.value }))
-            }
-          />
+        <div className="flex flex-col gap-2 md:flex-row">
+          <div className="flex flex-col">
+            <label htmlFor="password" className="mb-1 font-medium">
+              Password
+            </label>
+            <div
+              className="flex border border-gray-400 h-[40px] rounded-[8px] overflow-hidden items-center"
+              style={
+                isErr && !formD?.password
+                  ? {
+                      outline: "1px solid red",
+                      outlineOffset: "2px",
+                    }
+                  : {}
+              }
+            >
+              <input
+                type={showPw ? "text" : "password"}
+                id="password"
+                placeholder="********"
+                className="h-full p-2 w-[90%] rounded-[8px] focus:outline-none"
+                value={formD?.password ?? ""}
+                onChange={(e) =>
+                  setFormD((prev) => ({ ...prev, password: e.target.value }))
+                }
+              />
+              <Icon
+                icon={showPw ? "mdi-light:eye" : "mdi-light:eye-off"}
+                className="cursor-pointer size-6"
+                onClick={() => setShowPw((prev) => !prev)}
+              />
+            </div>
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="confirmPw" className="mb-1 font-medium">
+              Confirm Password
+            </label>
+            <input
+              type={showPw ? "text" : "password"}
+              id="confirmPw"
+              placeholder="********"
+              className="p-2 w-full border border-gray-400 h-[40px] rounded-[8px] overflow-hidden focus:outline-none"
+              value={formD?.confirm ?? ""}
+              style={
+                isErr && (!formD?.confirm || formD.confirm != formD.password)
+                  ? {
+                      outline: "1px solid red",
+                      outlineOffset: "2px",
+                    }
+                  : {}
+              }
+              onChange={(e) =>
+                setFormD((prev) => ({ ...prev, confirm: e.target.value }))
+              }
+            />
+          </div>
         </div>
+
         <Button className="hover:bg-[#02C7DB] hover:border-none">
           Register
         </Button>

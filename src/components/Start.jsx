@@ -1,9 +1,10 @@
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import AuthPage from "./AuthPage";
 import Setup from "./Setup";
+import { useAuthProvider } from "@/context/AuthContext";
 
 const Start = ({ open, setOpen }) => {
-  const isAuthenticated = false;
+  const { user, loadingUser } = useAuthProvider();
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -21,8 +22,8 @@ const Start = ({ open, setOpen }) => {
               />
             </div>
             <div className="flex-1 rounded-[8px] overflow-hidden">
-              {!isAuthenticated && <AuthPage />}
-              {isAuthenticated && <Setup setOpen={setOpen} />}
+              {!loadingUser && !user?.username && <AuthPage />}
+              {!loadingUser && user?.username && <Setup setOpen={setOpen} />}
             </div>
           </div>
         </DialogHeader>

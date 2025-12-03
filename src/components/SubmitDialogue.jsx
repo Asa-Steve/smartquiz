@@ -12,7 +12,7 @@ import {
 import { Button } from "./ui/button";
 import { useState } from "react";
 import QuizResult from "./QuizResult";
-import { useInitialStateContext } from "./context/InitialstateContext";
+import { useInitialStateContext } from "../context/InitialstateContext";
 
 const SubmitDialogue = () => {
   const [showResult, setShowResult] = useState(false);
