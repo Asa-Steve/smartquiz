@@ -7,11 +7,13 @@ import QuizLayout from "./layouts/QuizLayout";
 import InitialstateContext from "./context/InitialstateContext";
 import Verify from "./components/Verify";
 import AuthProvider from "./context/AuthContext";
+import { Toaster } from "sonner";
 
 const App = () => {
   return (
     <AuthProvider>
       <InitialstateContext>
+        <Toaster richColors closeButton />
         <Routes>
           {/* MainLayout wrapper */}
           <Route path="/" element={<MainLayout />}>

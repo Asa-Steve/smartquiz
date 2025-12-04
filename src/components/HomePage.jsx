@@ -25,9 +25,11 @@ const HomePage = () => {
       <AnimatedBox bgColor={"#c1121f"} size={getRandomSize()} />
       <AnimatedBox bgColor={"#fff"} size={getRandomSize()} />
       {user && (
-        <div className="absolute z-[1] p-1 pe-4 border w-fit min-w-fit border-gray-800 right-[2vw] top-2 bg-white/10 rounded flex items-center gap-2 text-white">
+        <div className="absolute z-[1] p-1 pe-4 border w-fit border-gray-800 right-[2vw] top-2 bg-white/10 rounded flex items-center gap-2 text-white">
           <img
-            src="https://api.dicebear.com/9.x/fun-emoji/svg?radius=5"
+            src={`https://api.dicebear.com/9.x/fun-emoji/svg?seed=${
+              username.split(" ")[0]
+            }&radius=5`}
             alt="avatar"
             className="w-[60px] h-[50px]"
           />
