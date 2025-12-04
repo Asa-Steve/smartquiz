@@ -1,11 +1,15 @@
 import { Icon } from "@iconify/react";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { useAuthProvider } from "@/context/AuthContext";
+import { Spinner } from "./ui/spinner";
 
 const LoginForm = () => {
   const [showPw, setShowPw] = useState(false);
   const [formD, setFormD] = useState({ username: "", password: "" });
   const [isErr, setIsErr] = useState(false);
+
+  const { loginWithUserName, isLogginIn } = useAuthProvider();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -23,7 +27,9 @@ const LoginForm = () => {
       return;
     }
 
-    console.log(formD);
+    const { username, password } = formD || {};
+
+    loginWithUserName({ username, password });
   }
 
   return (
@@ -86,7 +92,12 @@ const LoginForm = () => {
             />
           </div>
         </div>
-        <Button className="hover:bg-[#02C7DB] hover:border-none">Login</Button>
+        <Button
+          className="hover:bg-[#02C7DB] hover:border-none disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={isLogginIn}
+        >
+          {isLogginIn ? <Spinner /> : "Login"}
+        </Button>
       </form>
     </div>
   );

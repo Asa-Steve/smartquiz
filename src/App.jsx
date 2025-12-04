@@ -5,18 +5,18 @@ import { Route, Routes } from "react-router";
 import MainLayout from "./layouts/MainLayout";
 import QuizLayout from "./layouts/QuizLayout";
 import InitialstateContext from "./context/InitialstateContext";
-import Verify from "./components/Verify";
 import AuthProvider from "./context/AuthContext";
+import { Toaster } from "sonner";
 
 const App = () => {
   return (
     <AuthProvider>
       <InitialstateContext>
+        <Toaster richColors closeButton />
         <Routes>
           {/* MainLayout wrapper */}
           <Route path="/" element={<MainLayout />}>
             <Route index element={<HomePage />} />
-            <Route path="/verify" element={<Verify />} />
           </Route>
           {/* QuizLayout wrapper */}
           <Route path="/quiz" element={<QuizLayout />}>

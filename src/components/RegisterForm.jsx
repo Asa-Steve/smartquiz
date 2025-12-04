@@ -2,10 +2,13 @@ import { Icon } from "@iconify/react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { emailRegex } from "@/helpers/helper";
+import { useAuthProvider } from "@/context/AuthContext";
+import { Spinner } from "./ui/spinner";
 
 const RegisterForm = () => {
   const [showPw, setShowPw] = useState(false);
   const [isErr, setIsErr] = useState(false);
+  const { register, isRegisteringUser } = useAuthProvider();
   const [formD, setFormD] = useState({
     username: "",
     email: "",
@@ -37,7 +40,7 @@ const RegisterForm = () => {
     }
 
     const { confirm, ...others } = formD;
-    console.log(others);
+    register(others);
   }
 
   return (
@@ -88,7 +91,7 @@ const RegisterForm = () => {
               type="text"
               id="email"
               placeholder="devsteve@example.com"
-              className="h-full p-2 w-[90%] rounded-[8px] focus:outline-none"
+              className="h-full p-2 w-full rounded-[8px] focus:outline-none"
               value={formD?.email ?? ""}
               onChange={(e) =>
                 setFormD((prev) => ({ ...prev, email: e.target.value }))
@@ -115,7 +118,7 @@ const RegisterForm = () => {
               <input
                 type={showPw ? "text" : "password"}
                 id="password"
-                placeholder="********"
+                placeholder="at least 6 characters"
                 className="h-full p-2 w-[90%] rounded-[8px] focus:outline-none"
                 value={formD?.password ?? ""}
                 onChange={(e) =>
@@ -154,8 +157,11 @@ const RegisterForm = () => {
           </div>
         </div>
 
-        <Button className="hover:bg-[#02C7DB] hover:border-none">
-          Register
+        <Button
+          className="hover:bg-[#02C7DB] hover:border-none disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={isRegisteringUser}
+        >
+          {isRegisteringUser ? <Spinner /> : "Register"}
         </Button>
       </form>
     </div>
