@@ -17,14 +17,9 @@ import { useInitialStateContext } from "../context/InitialstateContext";
 const SubmitDialogue = () => {
   const [showResult, setShowResult] = useState(false);
   const { dispatch } = useInitialStateContext();
-  // const [result, setResult] = useState(null);
 
   function handleSubmit() {
     setShowResult(true);
-    // setResult({
-    //   answers: state?.answers,
-    //   totalScore: state?.totalScore,
-    // });
     dispatch({ type: "submit" });
   }
 

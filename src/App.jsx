@@ -12,7 +12,7 @@ const App = () => {
   return (
     <AuthProvider>
       <InitialstateContext>
-        <Toaster richColors closeButton />
+        <Toaster richColors closeButton position="top-center" />
         <Routes>
           {/* MainLayout wrapper */}
           <Route path="/" element={<MainLayout />}>
