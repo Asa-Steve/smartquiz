@@ -8,8 +8,7 @@ const LoginForm = () => {
   const [showPw, setShowPw] = useState(false);
   const [formD, setFormD] = useState({ username: "", password: "" });
   const [isErr, setIsErr] = useState(false);
-
-  const { loginWithUserName, isLogginIn } = useAuthProvider();
+  const { loginWithUsername, isLoggingIn } = useAuthProvider();
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -29,7 +28,15 @@ const LoginForm = () => {
 
     const { username, password } = formD || {};
 
-    loginWithUserName({ username, password });
+    loginWithUsername(
+      { username, password },
+      {
+        onSuccess: () => {
+          setFormD({ username: "", password: "" });
+          setIsErr(false);
+        },
+      }
+    );
   }
 
   return (
@@ -93,10 +100,12 @@ const LoginForm = () => {
           </div>
         </div>
         <Button
-          className="hover:bg-[#02C7DB] hover:border-none disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={isLogginIn}
+          className={`hover:bg-[#02C7DB] hover:border-none disabled:opacity-60 ${
+            isLoggingIn && "cursor-not-allowed"
+          }`}
+          disabled={isLoggingIn}
         >
-          {isLogginIn ? <Spinner /> : "Login"}
+          {isLoggingIn ? <Spinner /> : "Login"}
         </Button>
       </form>
     </div>

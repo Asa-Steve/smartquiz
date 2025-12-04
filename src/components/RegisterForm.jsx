@@ -9,6 +9,7 @@ const RegisterForm = () => {
   const [showPw, setShowPw] = useState(false);
   const [isErr, setIsErr] = useState(false);
   const { register, isRegisteringUser } = useAuthProvider();
+
   const [formD, setFormD] = useState({
     username: "",
     email: "",
@@ -40,7 +41,12 @@ const RegisterForm = () => {
     }
 
     const { confirm, ...others } = formD;
-    register(others);
+    register(others, {
+      onSuccess: () => {
+        setFormD({ username: "", email: "", password: "", confirm: "" });
+        setIsErr(false);
+      },
+    });
   }
 
   return (
@@ -158,7 +164,9 @@ const RegisterForm = () => {
         </div>
 
         <Button
-          className="hover:bg-[#02C7DB] hover:border-none disabled:cursor-not-allowed disabled:opacity-60"
+          className={`hover:bg-[#02C7DB] hover:border-none disabled:opacity-60 ${
+            isRegisteringUser && "cursor-not-allowed"
+          }`}
           disabled={isRegisteringUser}
         >
           {isRegisteringUser ? <Spinner /> : "Register"}

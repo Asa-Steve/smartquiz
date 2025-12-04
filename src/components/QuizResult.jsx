@@ -5,14 +5,16 @@ import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import Start from "./Start";
 import { useInitialStateContext } from "../context/InitialstateContext";
+import { useAuthProvider } from "@/context/AuthContext";
+import { Spinner } from "./ui/spinner";
+import { toast } from "sonner";
 
 const QuizResult = ({ open, setOpen }) => {
   const navigate = useNavigate();
   const [retake, setRetake] = useState(null);
   const { state, dispatch } = useInitialStateContext();
   const { questions, totalScore, answers, allowedTime, totalTime } = state;
-
-  console.log("QuizResult State:", state);
+  const { updateScore, isUpdatingScore, user } = useAuthProvider();
 
   const [aggregate, setAggregate] = useState({
     correctAnswers: 0,
@@ -64,10 +66,40 @@ const QuizResult = ({ open, setOpen }) => {
     });
   }, [questions, answers]);
 
+  useEffect(() => {
+    if (
+      !(
+        user?.highscore <
+          Math.trunc((totalScore / aggregate?.totalPoints) * 100) &&
+        answers?.length > user?.highest_qnum
+      )
+    )
+      return;
+    updateScore(
+      {
+        score: Math.trunc((totalScore / aggregate?.totalPoints) * 100),
+        highest_qnum: answers?.length,
+      },
+      {
+        onSuccess: () => toast.success("💐 new highscore saved!"),
+      }
+    );
+  }, [
+    totalScore,
+    aggregate?.totalPoints,
+    updateScore,
+    user?.highscore,
+    user?.highest_qnum,
+    answers,
+  ]);
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="[&>button]:hidden w-[90%] rounded-[8px] min-h-[60vh] md:max-w-full lg:max-w-[70vw]">
+        <DialogContent
+          onInteractOutside={(e) => e.preventDefault()}
+          className="[&>button]:hidden w-[90%] rounded-[8px] min-h-[60vh] md:max-w-full lg:max-w-[70vw]"
+        >
           <DialogHeader>
             <div className="flex h-full min-h-[400px] gap-2 rounded-[8px] overflow-hidden">
               <div className="flex-1 hidden rounded-[8px] overflow-hidden md:flex items-center">
@@ -132,26 +164,39 @@ const QuizResult = ({ open, setOpen }) => {
                   </div>
                 </div>
                 <div className="flex justify-between px-2 min-h-[60px] items-center">
-                  <Button
-                    onClick={handleRetake}
-                    className={"hover:bg-[#02C7DB] border-none"}
-                  >
-                    Retake Quiz
-                  </Button>
-                  <Button
-                    onClick={handleExit}
-                    variant={"destructive"}
-                    className="border-none hover:bg-red-400"
-                  >
-                    Exit Quiz
-                  </Button>
+                  {isUpdatingScore ? (
+                    <Button
+                      disabled
+                      className="flex items-center justify-center gap-2"
+                    >
+                      <Spinner /> Saving new highscore
+                    </Button>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={handleRetake}
+                        className={"hover:bg-[#02C7DB] border-none"}
+                      >
+                        Retake Quiz
+                      </Button>
+                      <Button
+                        onClick={handleExit}
+                        variant={"destructive"}
+                        className="border-none hover:bg-red-400"
+                      >
+                        Exit Quiz
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
           </DialogHeader>
         </DialogContent>
       </Dialog>
-      {retake && <Start open={retake} setOpen={setRetake} />}
+      {retake && (
+        <Start open={retake} setOpen={setRetake} closeOnClick={true} />
+      )}
     </>
   );
 };

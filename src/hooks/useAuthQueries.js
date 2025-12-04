@@ -41,7 +41,7 @@ async function createUserProfile(user) {
           .single();
         return data;
       }
-      toast("Error creating user profile");
+      toast.error("Error creating user profile");
       console.error("Error creating user profile:", error);
       return null;
     }
@@ -74,7 +74,7 @@ async function getUserProfile(userId) {
 
     return data;
   } catch (err) {
-    toast("couldn't get user");
+    toast.error("Couldn't get user");
     console.error("Exception in getUserProfile:", err);
     return null;
   }
@@ -104,42 +104,32 @@ export function useAuth() {
     staleTime: 1000 * 60 * 5,
   });
 
-  // Login user with email/password
-  const { mutateAsync: loginWithEmail, isPending: isLoggingInWithEmail } =
-    useMutation({
-      mutationFn: async ({ email, password }) => {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (error) {
-          console.log(error);
-          throw error;
-        }
-        return data;
-      },
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["auth-session"] });
-      },
-      onError: () => toast("couldn't login user"),
-    });
-
   // Login with username (converts username to email first)
   const { mutateAsync: loginWithUsername, isPending: isLoggingInWithUsername } =
     useMutation({
       mutationFn: async ({ username, password }) => {
         // First, get the email from username
         const userProfile = await getUserProfileByUsername(username);
-
+        console.log({ userProfile });
         if (!userProfile?.email) {
           throw new Error("User not found");
         }
 
-        // Then login with email
-        return await loginWithEmail({ email: userProfile.email, password });
+        // Then login with that email directly (don't call another mutation)
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: userProfile.email,
+          password,
+        });
+
+        if (error) throw error;
+        return data;
+      },
+      onSuccess: () => {
+        toast.success("Login successful");
+        queryClient.invalidateQueries({ queryKey: ["auth-session"] });
       },
       onError: (error) => {
+        toast.error("Couldn't login user");
         console.error("Error logging in with username:", error.message);
       },
     });
@@ -147,9 +137,23 @@ export function useAuth() {
   // Register User
   const { mutate: register, isPending: isRegisteringUser } = useMutation({
     mutationFn: async (newUser) => {
-      if (!newUser) throw new Error("User data required");
+      if (!newUser) {
+        throw new Error("User data required");
+      }
 
       const { username, email, password } = newUser;
+
+      //checking if username already exists
+      const { data: usernameExists } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("username", username)
+        .maybeSingle();
+
+      if (usernameExists) {
+        throw new Error("username already in use by another user!");
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -160,14 +164,29 @@ export function useAuth() {
         },
       });
 
-      if (error) throw error;
+      if (error) throw new Error("Error creating account. Please try again.");
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (data == null) return;
+      // Check if user already exists by looking at identities array
+      const isExistingUser = data.user?.identities?.length === 0;
+
+      if (isExistingUser) {
+        toast.warning(
+          "This email is already registered. Please log in instead."
+        );
+      } else {
+        toast.success(
+          "Account created! Check your email for the verification link."
+        );
+      }
+
       queryClient.invalidateQueries({ queryKey: ["auth-session"] });
     },
     onError: (error) => {
-      console.error("Error registering user:", error.message);
+      toast.error(error?.message);
+      console.error("Error registering user:", error);
     },
   });
 
@@ -197,6 +216,20 @@ export function useAuth() {
     },
   });
 
+  //   Updating highscore
+  const { mutate: updateScore, isPending: isUpdatingScore } = useMutation({
+    mutationFn: async ({ score, highest_qnum }) => {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ highscore: score, highest_qnum })
+        .eq("user_id", session?.user?.id);
+
+      if (error) {
+        console.log(error);
+      }
+    },
+  });
+
   return {
     user,
     session,
@@ -204,9 +237,11 @@ export function useAuth() {
     register,
     isRegisteringUser,
     loginWithUsername,
-    isLoggingIn: isLoggingInWithEmail || isLoggingInWithUsername,
+    isLoggingIn: isLoggingInWithUsername,
     signInWithOAuth,
     isSigningInWithOAuth,
+    updateScore,
+    isUpdatingScore,
     signOut,
     isSigningOut,
   };

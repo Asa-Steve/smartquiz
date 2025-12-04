@@ -61,8 +61,8 @@ const HomePage = () => {
       )}
       <div className="relative flex flex-col items-center justify-center w-full h-full gap-20 p-4 overflow-hidden font-bold backdrop-blur-[40px] bg-[hsla(221,51%,16%,0.6)]">
         <h1 className="font-bold text-white md:text-[4rem] text-center text-[2.5rem]">
-          Welcome to this Awesome <br />
-          Quiz App
+          Welcome to the <br />
+          SmartQuiz
         </h1>
         <button
           onClick={() => setOpen(true)}
