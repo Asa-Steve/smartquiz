@@ -1,9 +1,13 @@
+import { useAuthProvider } from "@/context/AuthContext";
+import { useInitialStateContext } from "@/context/InitialstateContext";
 import { Navigate, Outlet } from "react-router";
 
 const QuizLayout = () => {
-  const isAuthenticated = true;
+  const { user } = useAuthProvider();
+  const { questions } = useInitialStateContext();
+  const isAuthenticated = user?.username ? true : false;
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !questions?.length) {
     return <Navigate to="/" replace />;
   }
 
