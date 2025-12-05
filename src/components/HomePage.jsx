@@ -28,16 +28,16 @@ const HomePage = () => {
         <div className="absolute z-[1] p-1 pe-4 border w-fit border-gray-800 right-[2vw] top-2 bg-white/10 rounded flex items-center gap-2 text-white">
           <img
             src={`https://api.dicebear.com/9.x/fun-emoji/svg?seed=${
-              username.split(" ")[0]
+              username?.split(" ")[0]
             }&radius=5`}
             alt="avatar"
             className="w-[60px] h-[50px]"
           />
           <div className="w-full">
             <p className="text-gray-300">
-              {" "}
-              {username.length > 5 ? abbrName(username) : username}
+              {username?.length > 5 ? abbrName(username) : username}
             </p>
+
             <div className="flex items-center gap-2 pt-1 text-sm border-t border-gray-700 [&_svg]:hover:text-white [&>p]:hover:text-white w-fit pe-2">
               <p className="w-[15px]">
                 {!isSigningOut ? (
@@ -57,6 +57,17 @@ const HomePage = () => {
               </p>
             </div>
           </div>
+          {user?.highscore > 0 && (
+            <p className="absolute z-[1] p-1 pe-4 border w-fit border-gray-800 right-0 bottom-[-2rem] bg-white/10 rounded flex items-center gap-2 text-white">
+              <Icon
+                className="text-gray-300 size-5"
+                icon="streamline-cyber:badge-star-2"
+              />
+              <span className="text-[.7rem] lg:text-[.8rem] italic font-semibold text-gray-300">
+                High score: {user?.highscore}%
+              </span>
+            </p>
+          )}
         </div>
       )}
       <div className="relative flex flex-col items-center justify-center w-full h-full gap-20 p-4 overflow-hidden font-bold backdrop-blur-[40px] bg-[hsla(221,51%,16%,0.6)]">
