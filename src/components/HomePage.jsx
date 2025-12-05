@@ -60,7 +60,7 @@ const HomePage = () => {
           {user?.highscore > 0 && (
             <p className="absolute z-[1] p-1 pe-4 border w-fit border-gray-800 right-0 bottom-[-2rem] bg-white/10 rounded flex items-center gap-2 text-white">
               <Icon
-                className="text-gray-300 border min-w-[15px] "
+                className="text-gray-300 min-w-[15px] "
                 icon="streamline-cyber:badge-star-2"
               />
               <span className="text-[.7rem] lg:text-[.8rem] italic font-semibold text-gray-300">
