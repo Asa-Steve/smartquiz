@@ -63,7 +63,7 @@ const HomePage = () => {
                 className="text-gray-300 size-5"
                 icon="streamline-cyber:badge-star-2"
               />
-              <span className="text-sm italic font-semibold text-gray-300">
+              <span className="text-[.7rem] lg:text-[.8rem] italic font-semibold text-gray-300">
                 High score: {user?.highscore}%
               </span>
             </p>
