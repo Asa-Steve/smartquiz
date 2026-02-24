@@ -110,7 +110,6 @@ export function useAuth() {
       mutationFn: async ({ username, password }) => {
         // First, get the email from username
         const userProfile = await getUserProfileByUsername(username);
-        console.log({ userProfile });
         if (!userProfile?.email) {
           throw new Error("User not found");
         }
