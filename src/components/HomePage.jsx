@@ -17,7 +17,7 @@ const HomePage = () => {
   const { username } = user || {};
 
   return (
-    <>
+    <div className="overflow-hidden relative h-screen">
       <div className="absolute w-full h-[100vh] bg-[#01161e]"></div>
 
       {/* Animated blue box */}
@@ -84,7 +84,7 @@ const HomePage = () => {
         </button>
       </div>
       <Start open={open} setOpen={setOpen} />
-    </>
+    </div>
   );
 };
 

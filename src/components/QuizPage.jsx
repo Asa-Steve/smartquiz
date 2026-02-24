@@ -23,6 +23,7 @@ const QuizPage = () => {
     ended,
   } = state;
 
+
   // Hour tick
   useEffect(() => {
     setHrs(Math.floor(allowedTime / 60));
